@@ -1,0 +1,1417 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>Планувальник мистецтва: програма і КТП</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🎨%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,400..700&family=Onest:wght@400..700&display=swap">
+<style>
+:root {
+  --paper: #f4f6f9;
+  --surface: #ffffff;
+  --ink: #1b2233;
+  --muted: #58627a;
+  --line: #d5dbe5;
+  --accent: #2f45c5;
+  --accent-hover: #2436a3;
+  --accent-ink: #ffffff;
+  --accent-soft: #e4e8fa;
+  --warn: #8a5300;
+  --warn-bg: #fff1cf;
+  --ok: #0d6a54;
+  --ok-bg: #d8f1e9;
+  --danger: #b3261e;
+  --serif: 'Literata', Georgia, 'Times New Roman', serif;
+  --sans: 'Onest', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --paper: #12151c; --surface: #1a1f2a; --ink: #e8ebf2; --muted: #a0a9bc; --line: #2c3344;
+    --accent: #8493ff; --accent-hover: #a2aeff; --accent-ink: #10142b; --accent-soft: #232a4d;
+    --warn: #f0c36b; --warn-bg: #33290f; --ok: #7bdcc0; --ok-bg: #12332b; --danger: #ff8f86;
+  }
+}
+:root[data-theme='dark'] {
+  --paper: #12151c; --surface: #1a1f2a; --ink: #e8ebf2; --muted: #a0a9bc; --line: #2c3344;
+  --accent: #8493ff; --accent-hover: #a2aeff; --accent-ink: #10142b; --accent-soft: #232a4d;
+  --warn: #f0c36b; --warn-bg: #33290f; --ok: #7bdcc0; --ok-bg: #12332b; --danger: #ff8f86;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-padding-top: env(safe-area-inset-top, 0px); }
+:root { box-sizing: border-box; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+body {
+  margin: 0; background: var(--paper); color: var(--ink);
+  font: 400 16px/1.55 var(--sans);
+}
+[hidden] { display: none !important; }
+.wrap { max-width: 1080px; margin: 0 auto; padding: 28px 18px 80px; }
+
+/* ── шапка ── */
+.top { padding: 8px 0 28px; }
+.top h1 { font: 600 clamp(28px, 5.4vw, 46px)/1.1 var(--serif); letter-spacing: -0.01em; margin: 0 0 12px; max-width: 18ch; }
+.top .lede { margin: 0; color: var(--muted); max-width: 56ch; font-size: 17px; }
+.top .bar { display: flex; gap: 12px; align-items: center; justify-content: space-between; margin-bottom: 18px; color: var(--muted); font-size: 14px; }
+
+/* ── кроки ── */
+.step { display: grid; grid-template-columns: 1fr; gap: 14px; padding: 26px 0 30px; border-top: 2px solid var(--ink); }
+@media (min-width: 900px) { .step { grid-template-columns: 230px 1fr; gap: 36px; } .step.wide { grid-template-columns: 1fr; gap: 14px; } }
+.step-body, .step-head { min-width: 0; }
+.step-head h2 { font: 600 22px/1.2 var(--serif); margin: 0 0 6px; display: flex; gap: 10px; align-items: baseline; }
+.step-head .n { font: 500 15px var(--sans); color: var(--muted); min-width: 1.2em; }
+.step-head p { margin: 0; color: var(--muted); font-size: 14.5px; }
+
+/* ── поля й кнопки ── */
+label.f { display: block; font-size: 14px; color: var(--muted); }
+label.f > span { display: block; margin-bottom: 4px; }
+input[type='text'], input[type='number'], input[type='date'], input[type='password'], select, textarea {
+  width: 100%; font: inherit; color: var(--ink); background: var(--surface);
+  border: 1px solid var(--line); border-radius: 8px; padding: 9px 11px; min-height: 42px;
+}
+textarea { resize: vertical; line-height: 1.45; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+input:focus-visible, select:focus-visible, textarea:focus-visible { outline-offset: 0; border-color: var(--accent); }
+.grid2 { display: grid; gap: 14px; grid-template-columns: 1fr; }
+@media (min-width: 620px) { .grid2 { grid-template-columns: 1fr 1fr; } }
+.grid3 { display: grid; gap: 14px; grid-template-columns: 1fr; }
+@media (min-width: 620px) { .grid3 { grid-template-columns: 1fr 1fr 1fr; } }
+.stack > * + * { margin-top: 16px; }
+
+.btn {
+  font: 600 15px var(--sans); border-radius: 9px; padding: 11px 18px; min-height: 44px;
+  border: 1.5px solid var(--accent); background: var(--accent); color: var(--accent-ink); cursor: pointer;
+}
+.btn:hover:not(:disabled) { background: var(--accent-hover); border-color: var(--accent-hover); }
+.btn.ghost { background: transparent; color: var(--accent); }
+.btn.ghost:hover:not(:disabled) { background: var(--accent-soft); }
+.btn.small { padding: 7px 12px; min-height: 36px; font-size: 14px; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.icon { border: 0; background: transparent; color: var(--muted); font-size: 18px; width: 40px; height: 40px; border-radius: 8px; cursor: pointer; }
+.icon:hover { background: var(--accent-soft); color: var(--ink); }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.msg { font-size: 14.5px; color: var(--muted); }
+.msg.err { color: var(--danger); }
+.msg.ok { color: var(--ok); }
+.note { font-size: 13.5px; color: var(--muted); }
+
+/* ── завантаження ── */
+.drop {
+  display: block; text-align: center; padding: 30px 18px; border: 2px dashed var(--line); border-radius: 12px;
+  background: var(--surface); cursor: pointer; transition: border-color 0.15s, background 0.15s;
+}
+.drop:hover, .drop.over, .drop:focus-within { border-color: var(--accent); background: var(--accent-soft); }
+.drop strong { display: block; font: 600 17px var(--serif); margin-bottom: 4px; }
+.drop span { color: var(--muted); font-size: 14.5px; }
+.drop input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.filechip { font-size: 14px; color: var(--muted); }
+
+/* ── стрічка модулів: ширина сегмента = кількість годин ── */
+.ribbon { display: flex; height: 40px; border-radius: 8px; overflow: hidden; gap: 2px; margin: 4px 0 18px; }
+.seg { display: flex; align-items: center; justify-content: center; min-width: 26px; font: 600 14px var(--sans); }
+.mods { list-style: none; margin: 0; padding: 0; }
+.mod { border-left: 6px solid var(--pig); padding: 10px 0 10px 14px; margin-bottom: 12px; background: linear-gradient(90deg, color-mix(in srgb, var(--pig) 9%, transparent), transparent 40%); }
+.mod-head { display: grid; grid-template-columns: 1fr auto auto; gap: 8px; align-items: center; }
+.mod-head input.mod-name { font-weight: 600; }
+.hrs { display: flex; align-items: center; gap: 6px; color: var(--muted); font-size: 14px; }
+.hrs input { width: 76px; text-align: center; }
+.mod details { margin-top: 8px; }
+.mod summary { cursor: pointer; color: var(--muted); font-size: 14px; padding: 6px 0; }
+.mod details .stack { padding: 8px 0 4px; }
+.est { font-size: 13px; color: var(--warn); }
+
+/* ── розклад ── */
+.rows > .row { display: grid; grid-template-columns: 1fr 1fr auto; gap: 8px; align-items: center; margin-bottom: 8px; }
+.rows > .row.brk { grid-template-columns: auto 1fr auto 1fr auto; }
+.rows .lbl { color: var(--muted); font-size: 14px; }
+@media (max-width: 520px) { .rows > .row.brk { grid-template-columns: 1fr 1fr auto; } .rows > .row.brk .lbl { display: none; } }
+.summary { padding: 10px 14px; border-radius: 8px; font-size: 14.5px; background: var(--ok-bg); color: var(--ok); }
+.summary.warn { background: var(--warn-bg); color: var(--warn); }
+.checks { display: flex; flex-wrap: wrap; gap: 8px 22px; }
+.checks label { display: flex; gap: 8px; align-items: center; min-height: 36px; cursor: pointer; }
+.checks input { width: 20px; height: 20px; accent-color: var(--accent); }
+
+/* ── прогрес ── */
+progress { width: 100%; height: 10px; accent-color: var(--accent); }
+.gen-box { margin-top: 14px; }
+
+/* ── таблиця плану ── */
+.plan-wrap { overflow-x: auto; margin: 0 -18px; padding: 0 18px; }
+table.plan { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 980px; }
+table.plan th { text-align: left; font: 600 13px var(--sans); color: var(--muted); padding: 8px 10px; border-bottom: 2px solid var(--ink); white-space: nowrap; }
+table.plan td { vertical-align: top; padding: 8px 10px; border-bottom: 1px solid var(--line); }
+table.plan tr.lesson td:first-child { border-left: 5px solid var(--pig); }
+table.plan tr.modrow th { background: color-mix(in srgb, var(--pig) 14%, var(--surface)); color: var(--ink); font: 600 15px var(--serif); padding: 10px 12px; border-bottom: 1px solid var(--line); border-left: 5px solid var(--pig); white-space: normal; }
+.ed { min-height: 1.5em; white-space: pre-wrap; border-radius: 5px; padding: 1px 3px; margin: -1px -3px; }
+.ed:hover { background: color-mix(in srgb, var(--accent) 7%, transparent); }
+.ed:focus { outline: 2px solid var(--accent); background: var(--surface); }
+.ed.type { color: var(--muted); font-style: italic; font-size: 13px; }
+td.c-topic .ed:first-child { font-weight: 600; }
+td.c-n { width: 40px; color: var(--muted); }
+td.c-date { width: 150px; }
+td.c-date input { min-height: 34px; padding: 4px 6px; font-size: 13.5px; }
+.plan-empty:empty { display: none; }
+
+@media (max-width: 760px) {
+  .plan-wrap { overflow: visible; }
+  table.plan, table.plan tbody, table.plan tr, table.plan td, table.plan th { display: block; width: 100%; min-width: 0; }
+  table.plan { min-width: 0; }
+  table.plan thead { display: none; }
+  table.plan tr.lesson { border: 1px solid var(--line); border-left: 6px solid var(--pig); border-radius: 8px; background: var(--surface); margin: 0 0 12px; padding: 6px 4px; }
+  table.plan tr.lesson td:first-child { border-left: 0; }
+  table.plan td { border-bottom: 0; padding: 5px 10px; }
+  table.plan td::before { content: attr(data-label); display: block; font-size: 12px; color: var(--muted); }
+  td.c-n, td.c-date { width: auto; }
+  td.c-n { font-weight: 600; color: var(--ink); }
+  table.plan td.c-n::before { display: inline; margin-right: 6px; font-weight: 400; }
+  table.plan tr.modrow { margin: 18px 0 8px; }
+}
+
+.foot { margin-top: 30px; color: var(--muted); font-size: 13.5px; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
+@media print { .top .bar, .step:not(#s5), .actions { display: none; } }
+
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="bar">
+      <span>Для вчителя мистецтва (НУШ)</span>
+      <button class="btn ghost small" id="btn-reset" type="button">Почати спочатку</button>
+    </div>
+    <h1>Від модульної програми до КТП</h1>
+    <p class="lede">Завантажте модульну програму, вкажіть розклад — і отримайте навчальну програму та календарно-тематичне планування у файлі Word.</p>
+  </header>
+
+  <section class="step" id="s1">
+    <div class="step-head">
+      <h2><span class="n">1</span>Програма</h2>
+      <p>Файл DOCX або PDF із текстом модульної програми. Або вставте текст.</p>
+    </div>
+    <div class="step-body stack">
+      <label class="drop" id="drop">
+        <input type="file" id="file" accept=".docx,.pdf,.txt,.md">
+        <strong>Оберіть або перетягніть файл</strong>
+        <span>DOCX, PDF або TXT</span>
+      </label>
+      <div class="filechip" id="filechip" hidden></div>
+      <label class="f"><span>Текст програми</span>
+        <textarea id="src" rows="8" placeholder="Сюди потрапить текст із файлу. Можна вставити власний."></textarea>
+      </label>
+      <label class="f" id="access-box" hidden><span>Код доступу (якщо його задано на сервері)</span><input type="password" id="access" autocomplete="off"></label>
+      <div class="actions">
+        <button class="btn" id="btn-analyze" type="button">Проаналізувати програму</button>
+        <span class="msg" id="analyze-msg" role="status" aria-live="polite"></span>
+      </div>
+      <p class="note" id="claude-note" hidden>Складання плану виконує Claude із вашого облікового запису; перший запит попросить дозвіл.</p>
+    </div>
+  </section>
+
+  <section class="step" id="s2" hidden>
+    <div class="step-head">
+      <h2><span class="n">2</span>Модулі</h2>
+      <p id="prog-meta">Перевірте, що знайдено. Ширина сегмента — кількість годин.</p>
+    </div>
+    <div class="step-body">
+      <div class="ribbon" id="ribbon" role="img" aria-label="Розподіл годин за модулями"></div>
+      <ul class="mods" id="mods"></ul>
+      <button class="btn ghost small" id="btn-add-mod" type="button" data-act="add-mod">Додати модуль</button>
+    </div>
+  </section>
+
+  <section class="step" id="s3" hidden>
+    <div class="step-head">
+      <h2><span class="n">3</span>Розклад</h2>
+      <p>Дати уроків рахуються за вашим розкладом, без канікул.</p>
+    </div>
+    <div class="step-body stack">
+      <div class="grid2">
+        <label class="f"><span>Заклад освіти</span><input type="text" data-set="school" autocomplete="off"></label>
+        <label class="f"><span>Вчитель</span><input type="text" data-set="teacher" autocomplete="off"></label>
+      </div>
+      <div class="grid3">
+        <label class="f"><span>Клас</span><input type="text" data-set="grade" inputmode="numeric" placeholder="5"></label>
+        <label class="f"><span>Навчальний рік</span><input type="text" data-set="year" placeholder="2026/2027"></label>
+        <span></span>
+      </div>
+      <div class="grid2">
+        <label class="f"><span>Перший урок не раніше</span><input type="date" data-set="start"></label>
+        <label class="f"><span>Навчальний рік завершується</span><input type="date" data-set="end"></label>
+      </div>
+      <div>
+        <div class="lbl note" style="margin-bottom:6px">Уроки мистецтва на тижні</div>
+        <div class="rows" id="rules"></div>
+        <button class="btn ghost small" type="button" data-act="add-rule">Додати урок на тиждень</button>
+      </div>
+      <div>
+        <div class="lbl note" style="margin-bottom:6px">Канікули й вихідні (вкажіть діапазон; для одного дня однакові дати)</div>
+        <div class="rows" id="breaks"></div>
+        <button class="btn ghost small" type="button" data-act="add-break">Додати канікули або вихідний</button>
+      </div>
+      <div class="summary" id="summary" role="status" hidden></div>
+      <label class="f"><span>Побажання до планування (необов’язково)</span>
+        <textarea data-set="notes" rows="2" placeholder="Наприклад: більше практичних робіт, акцент на українських мистецьких традиціях"></textarea>
+      </label>
+      <div class="checks" role="group" aria-label="Що включити у файл">
+        <label><input type="checkbox" data-set="includeProgram"> Навчальна програма</label>
+        <label><input type="checkbox" data-set="includeKtp"> Календарно-тематичне планування</label>
+      </div>
+    </div>
+  </section>
+
+  <section class="step" id="s4" hidden>
+    <div class="step-head">
+      <h2><span class="n">4</span>Складання</h2>
+      <p>Уроки складаються частинами по модулях; готове не втрачається.</p>
+    </div>
+    <div class="step-body stack">
+      <div class="actions">
+        <button class="btn" id="btn-gen" type="button">Скласти план</button>
+        <button class="btn ghost" id="btn-stop" type="button" hidden>Зупинити</button>
+        <span class="msg" id="gen-msg" role="status" aria-live="polite"></span>
+      </div>
+      <div class="gen-box" id="gen-box" hidden><progress id="prog" max="100" value="0"></progress></div>
+    </div>
+  </section>
+
+  <section class="step wide" id="s5" hidden>
+    <div class="step-head">
+      <h2><span class="n">5</span>План і файл</h2>
+      <p>Клацніть по клітинці, щоб виправити текст. Потім завантажте Word.</p>
+    </div>
+    <div class="step-body stack">
+      <div class="actions">
+        <button class="btn" id="btn-docx" type="button">Завантажити Word (.docx)</button>
+        <button class="btn ghost" type="button" data-act="redate">Перерахувати дати за розкладом</button>
+        <span class="msg" id="exp-msg" role="status" aria-live="polite"></span>
+      </div>
+      <div class="plan-wrap" id="plan"></div>
+    </div>
+  </section>
+
+  <p class="foot">Чернетка зберігається в цьому браузері. Перед використанням звірте тексти з чинною програмою та наказами вашого закладу.</p>
+</div>
+
+<script>
+/* Планувальник мистецтва — core.js
+   Чиста логіка без DOM: дати й розклад, промпти, розбір JSON, побудова .docx.
+   Працює і в браузері (window.PlannerCore), і в Node (require) — для тестів. */
+(function (root, factory) {
+  if (typeof module === 'object' && module.exports) module.exports = factory();
+  else root.PlannerCore = factory();
+})(typeof self !== 'undefined' ? self : this, function () {
+  'use strict';
+
+  // ───────────── допоміжне ─────────────
+  const pad = (n) => String(n).padStart(2, '0');
+  const DAY = 86400000;
+  const str = (x) => (x == null ? '' : String(x).trim());
+  const arr = (x) => (Array.isArray(x) ? x.map(str).filter(Boolean) : []);
+  const num = (x) => {
+    if (x == null || x === '') return null;
+    const n = Number(String(x).replace(',', '.'));
+    return Number.isFinite(n) ? n : null;
+  };
+  const sum = (a) => a.reduce((s, v) => s + v, 0);
+
+  // Кольори модулів — назви пігментів, щоб у класі всі знали, про що мова.
+  const PIGMENTS = [
+    { name: 'ультрамарин', hex: '#2F45C5', ink: '#FFFFFF', tint: 'E4E8FA' },
+    { name: 'кадмій жовтий', hex: '#E2A600', ink: '#1B2233', tint: 'FBF0CC' },
+    { name: 'віридіан', hex: '#0E8F72', ink: '#FFFFFF', tint: 'D6F0E8' },
+    { name: 'марена', hex: '#C2374F', ink: '#FFFFFF', tint: 'F6DDE2' },
+    { name: 'сієна', hex: '#B5652B', ink: '#FFFFFF', tint: 'F3E1D3' },
+    { name: 'фіолетовий', hex: '#7A4CB3', ink: '#FFFFFF', tint: 'E8DFF3' },
+  ];
+  const pigment = (i) => PIGMENTS[((i % PIGMENTS.length) + PIGMENTS.length) % PIGMENTS.length];
+
+  // ───────────── дати ─────────────
+  function parseISO(s) {
+    if (!s) return null;
+    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(s));
+    if (!m) return null;
+    return Date.UTC(+m[1], +m[2] - 1, +m[3]);
+  }
+  function toISO(ms) {
+    const d = new Date(ms);
+    return d.getUTCFullYear() + '-' + pad(d.getUTCMonth() + 1) + '-' + pad(d.getUTCDate());
+  }
+  function fmtUA(iso) {
+    const ms = parseISO(iso);
+    if (ms == null) return '';
+    const d = new Date(ms);
+    return pad(d.getUTCDate()) + '.' + pad(d.getUTCMonth() + 1) + '.' + d.getUTCFullYear();
+  }
+
+  /* Дати уроків.
+     rules:  [{weekday: 1..5, pattern: 'all'|'odd'|'even'}]  (odd = 1-й, 3-й… тиждень від початку)
+     breaks: [{from:'YYYY-MM-DD', to:'YYYY-MM-DD'}]  (канікули, свята — включно) */
+  function buildSlots({ start, end, rules, breaks }) {
+    const s = parseISO(start), e = parseISO(end);
+    if (s == null || e == null || e < s) return [];
+    const off = (breaks || [])
+      .map((b) => ({ from: parseISO(b.from), to: parseISO(b.to || b.from) }))
+      .filter((b) => b.from != null && b.to != null);
+    const week0 = s - ((new Date(s).getUTCDay() + 6) % 7) * DAY; // понеділок тижня початку
+    const out = [];
+    for (let t = s; t <= e; t += DAY) {
+      const wd = new Date(t).getUTCDay();
+      if (wd === 0 || wd === 6) continue;
+      if (off.some((b) => t >= b.from && t <= b.to)) continue;
+      const weekIdx = Math.floor((t - week0) / (7 * DAY));
+      for (const r of rules || []) {
+        if (Number(r.weekday) !== wd) continue;
+        if (r.pattern === 'odd' && weekIdx % 2 !== 0) continue;
+        if (r.pattern === 'even' && weekIdx % 2 !== 1) continue;
+        out.push(toISO(t));
+      }
+    }
+    return out;
+  }
+
+  // ───────────── розбір відповіді моделі ─────────────
+  function stripFences(t) {
+    return String(t).replace(/```(?:json)?/gi, '').trim();
+  }
+  // Якщо відповідь обрізана — рятуємо повні об'єкти масиву.
+  function salvageArray(t) {
+    const start = t.indexOf('[');
+    if (start < 0) return null;
+    let depth = 0, inStr = false, esc = false, lastEnd = -1;
+    for (let i = start + 1; i < t.length; i++) {
+      const c = t[i];
+      if (inStr) {
+        if (esc) esc = false;
+        else if (c === '\\') esc = true;
+        else if (c === '"') inStr = false;
+        continue;
+      }
+      if (c === '"') inStr = true;
+      else if (c === '{') depth++;
+      else if (c === '}') { depth--; if (depth === 0) lastEnd = i; }
+    }
+    if (lastEnd < 0) return null;
+    try { return JSON.parse(t.slice(start, lastEnd + 1) + ']'); } catch (e) { return null; }
+  }
+  function parseJSONLoose(text, { array } = {}) {
+    const t = stripFences(text);
+    const open = array ? '[' : '{', close = array ? ']' : '}';
+    const a = t.indexOf(open), b = t.lastIndexOf(close);
+    if (a >= 0 && b > a) {
+      try { return JSON.parse(t.slice(a, b + 1)); } catch (e) { /* пробуємо врятувати */ }
+    }
+    if (array) {
+      const s = salvageArray(t);
+      if (s && s.length) return s;
+    }
+    throw new Error('Модель повернула відповідь у неочікуваному форматі. Спробуйте ще раз.');
+  }
+
+  // ───────────── програма ─────────────
+  function normalizeProgram(raw) {
+    raw = raw || {};
+    const p = {
+      title: str(raw.title),
+      grade: str(raw.grade),
+      hoursPerYear: num(raw.hoursPerYear),
+      hoursPerWeek: num(raw.hoursPerWeek),
+      keyCompetencies: arr(raw.keyCompetencies),
+      crossCuttingThemes: arr(raw.crossCuttingThemes),
+      modules: [],
+    };
+    (Array.isArray(raw.modules) ? raw.modules : []).forEach((m, i) => {
+      p.modules.push({
+        name: str(m.name) || 'Модуль ' + (i + 1),
+        hours: num(m.hours),
+        summary: str(m.summary),
+        topics: (Array.isArray(m.topics) ? m.topics : [])
+          .map((t) => (typeof t === 'string' ? { title: str(t), hours: null } : { title: str(t && t.title), hours: num(t && t.hours) }))
+          .filter((t) => t.title),
+        outcomes: arr(m.outcomes),
+      });
+    });
+    // модулі без годин: ділимо залишок від годин на рік
+    const missing = p.modules.filter((m) => m.hours == null);
+    if (missing.length) {
+      const known = sum(p.modules.map((m) => m.hours || 0));
+      const rest = p.hoursPerYear != null ? Math.max(0, p.hoursPerYear - known) : 0;
+      const each = Math.floor(rest / missing.length);
+      let extra = rest - each * missing.length;
+      missing.forEach((m, i) => { m.hours = each + (i < extra ? 1 : 0); m.estimated = true; });
+    }
+    return p;
+  }
+  const totalHours = (program) => sum((program.modules || []).map((m) => Math.max(0, Math.round(m.hours || 0))));
+
+  // ───────────── промпти ─────────────
+  function analyzePrompt(text) {
+    return `Ти — методист з мистецької освіти в Україні (Нова українська школа, предмет «Мистецтво»).
+Нижче — текст модульної навчальної програми. Витягни з нього структуру і поверни ЛИШЕ один JSON-об'єкт: без пояснень, без markdown.
+
+Схема:
+{
+  "title": "назва програми",
+  "grade": "клас або класи, для яких програма (наприклад «5»)",
+  "hoursPerYear": число годин на рік або null,
+  "hoursPerWeek": число годин на тиждень або null,
+  "modules": [
+    {
+      "name": "назва модуля",
+      "hours": кількість годин на модуль або null, якщо в програмі не вказано,
+      "summary": "1–2 речення про зміст модуля",
+      "topics": [ { "title": "тема або підтема", "hours": число або null } ],
+      "outcomes": [ "очікуваний результат навчання; якщо в програмі є код (наприклад МИЗ 1.1.1), збережи його дослівно" ]
+    }
+  ],
+  "keyCompetencies": ["ключові компетентності, якщо названі"],
+  "crossCuttingThemes": ["наскрізні лінії або теми, якщо названі"]
+}
+
+Правила:
+- Нічого не вигадуй: використовуй лише те, що є в тексті. Чого немає — null або [].
+- Якщо програма не поділена на модулі, візьми за модулі її розділи чи змістові лінії.
+- Мова значень — українська, як у тексті програми.
+
+ТЕКСТ ПРОГРАМИ:
+"""
+${text}
+"""`;
+  }
+
+  function contextLines(program, settings) {
+    const s = settings || {};
+    const bits = [];
+    if (program.title) bits.push('Програма: «' + program.title + '»');
+    if (s.grade || program.grade) bits.push('Клас: ' + (s.grade || program.grade));
+    if (program.hoursPerWeek) bits.push('Годин на тиждень: ' + program.hoursPerWeek);
+    if (program.keyCompetencies.length) bits.push('Ключові компетентності: ' + program.keyCompetencies.join('; '));
+    if (program.crossCuttingThemes.length) bits.push('Наскрізні лінії: ' + program.crossCuttingThemes.join('; '));
+    return bits.join('\n');
+  }
+
+  function introPrompt(program, settings, sourceExcerpt) {
+    const mods = program.modules.map((m, i) => `${i + 1}. ${m.name} — ${m.hours} год. ${m.summary}`).join('\n');
+    return `Ти — методист з мистецької освіти в Україні (НУШ). Напиши коротку пояснювальну записку до навчальної програми вчителя.
+Спирайся ЛИШЕ на подані дані; не вигадуй нормативних посилань, цифр і вимог, яких тут немає.
+
+${contextLines(program, settings)}
+Модулі:
+${mods}
+${settings && settings.notes ? '\nПобажання вчителя: ' + settings.notes + '\n' : ''}
+Уривок вихідної програми (для тону й термінології):
+"""
+${String(sourceExcerpt || '').slice(0, 5000)}
+"""
+
+Поверни ЛИШЕ JSON-об'єкт із рядками українською (2–4 речення в кожному):
+{
+  "purpose": "мета й завдання вивчення предмета в цьому класі",
+  "structure": "як побудована програма: модулі, їхня логіка, розподіл годин",
+  "organization": "організація навчання: види діяльності, практичні роботи, інтеграція",
+  "assessment": "оцінювання — лише якщо про нього йдеться у вихідній програмі, інакше порожній рядок"
+}`;
+  }
+
+  function lessonsPrompt({ program, settings, moduleIdx, from, to, previousTopics }) {
+    const m = program.modules[moduleIdx];
+    const count = to - from;
+    const total = Math.round(m.hours || 0);
+    const topics = m.topics.length ? m.topics.map((t) => '- ' + t.title + (t.hours ? ' (' + t.hours + ' год)' : '')).join('\n') : '(у програмі окремих тем не виділено — сформулюй теми за змістом модуля)';
+    const outcomes = m.outcomes.length ? m.outcomes.map((o) => '- ' + o).join('\n') : '(у програмі не вказано)';
+    return `Ти — досвідчений учитель-методист з мистецтва в Новій українській школі. Склади частину календарно-тематичного планування.
+
+${contextLines(program, settings)}
+Модуль ${moduleIdx + 1} з ${program.modules.length}: «${m.name}» — усього ${total} год (уроків).
+Про модуль: ${m.summary || '—'}
+Теми модуля за програмою:
+${topics}
+Очікувані результати модуля за програмою:
+${outcomes}
+${settings && settings.notes ? '\nПобажання вчителя: ' + settings.notes + '\n' : ''}
+Потрібні уроки з ${from + 1}-го по ${to}-й (це ${count} уроків з ${total} у модулі). Кожен урок — 1 година.
+${previousTopics && previousTopics.length ? 'Теми вже складених уроків цього модуля (не повторюй, продовжуй послідовність):\n' + previousTopics.map((t, i) => (i + 1) + '. ' + t).join('\n') + '\n' : ''}
+Поверни ЛИШЕ JSON-масив із рівно ${count} об'єктів, без пояснень і без markdown:
+[
+  {
+    "topic": "тема уроку — коротко й змістовно",
+    "type": "тип уроку: вивчення нового, мистецька практика, інтегрований урок, узагальнення, проєкт, перегляд і обговорення тощо",
+    "outcomes": "очікувані результати цього уроку — обери з переліку модуля вище, зберігаючи коди; якщо кодів немає, сформулюй коротко",
+    "activity": "що роблять учні: сприймання, інтерпретація, практична робота, обговорення — 1–2 речення",
+    "materials": "матеріали, техніки, засоби (наприклад: гуаш, папір А3, презентація, аудіозаписи)"
+  }
+]
+
+Правила:
+- Тема програми може тривати кілька уроків; розподіляй теми за годинами й дотримуйся послідовності програми.
+- Чергуй сприймання та практичну діяльність; на завершення модуля, якщо доречно, став урок-узагальнення або проєкт.
+- Не вигадуй кодів результатів, яких немає в програмі.
+- Пиши українською.`;
+  }
+
+  function normalizeLessonItem(it) {
+    const s = (v) => (Array.isArray(v) ? v.map(str).filter(Boolean).join('; ') : str(v));
+    return { topic: s(it && it.topic), type: s(it && it.type), outcomes: s(it && it.outcomes), activity: s(it && it.activity), materials: s(it && it.materials) };
+  }
+  function normalizeLessons(list) {
+    return (Array.isArray(list) ? list : []).map(normalizeLessonItem).filter((x) => x.topic);
+  }
+  function normalizeIntro(raw) {
+    raw = raw || {};
+    return { purpose: str(raw.purpose), structure: str(raw.structure), organization: str(raw.organization), assessment: str(raw.assessment) };
+  }
+
+  // ───────────── уроки: каркас, чанки, дати ─────────────
+  function buildSkeleton(program) {
+    const lessons = [];
+    program.modules.forEach((m, mi) => {
+      const n = Math.max(0, Math.round(m.hours || 0));
+      for (let k = 0; k < n; k++) lessons.push({ module: mi, idx: k, date: '', topic: '', type: '', outcomes: '', activity: '', materials: '', notes: '' });
+    });
+    return lessons;
+  }
+  function assignDates(lessons, slots) {
+    lessons.forEach((l, i) => { l.date = i < slots.length ? slots[i] : ''; });
+    return lessons;
+  }
+  // рівномірний поділ count на частини не більші за size
+  function chunkRanges(count, size) {
+    if (count <= 0) return [];
+    const parts = Math.ceil(count / size);
+    const base = Math.floor(count / parts);
+    let extra = count - base * parts, a = 0;
+    const out = [];
+    for (let i = 0; i < parts; i++) {
+      const len = base + (i < extra ? 1 : 0);
+      out.push([a, a + len]);
+      a += len;
+    }
+    return out;
+  }
+
+  function safeFileName(name) {
+    return String(name).replace(/[\\/:*?"<>|]+/g, '').replace(/\s+/g, '_').slice(0, 120) || 'plan';
+  }
+
+  // ───────────── Word ─────────────
+  function buildDocx(docx, data, opts) {
+    const D = docx;
+    opts = opts || {};
+    const s = data.settings || {};
+    const P = data.program || { modules: [] };
+    const lessons = data.lessons || [];
+    const intro = data.intro || null;
+    const includeProgram = opts.includeProgram !== false;
+    const includeKtp = opts.includeKtp !== false;
+    const FONT = 'Times New Roman';
+    const gradeTxt = str(s.grade || P.grade) ? str(s.grade || P.grade) + ' клас' : '';
+    const yearTxt = str(s.year) ? str(s.year) + ' навчальний рік' : '';
+
+    const run = (text, o) => new D.TextRun(Object.assign({ text: String(text == null ? '' : text), font: FONT }, o || {}));
+    const para = (text, o) => new D.Paragraph(Object.assign({ children: [run(text, (o && o.run) || {})] }, (o && o.p) || {}));
+    const bodyParas = (text) => String(text || '').split(/\r?\n/).map((t) => t.trim()).filter(Boolean)
+      .map((t) => para(t, { p: { spacing: { after: 120, line: 300 }, alignment: D.AlignmentType.JUSTIFIED } }));
+    const bullet = (t) => new D.Paragraph({ numbering: { reference: 'bul', level: 0 }, spacing: { after: 60 }, children: [run(t)] });
+    const h1 = (t) => new D.Paragraph({ heading: D.HeadingLevel.HEADING_1, keepNext: true, children: [run(t, { bold: true, size: 30 })] });
+    const h2 = (t) => new D.Paragraph({ heading: D.HeadingLevel.HEADING_2, keepNext: true, children: [run(t, { bold: true, size: 26 })] });
+
+    const line = { style: D.BorderStyle.SINGLE, size: 4, color: '7A7F8A' };
+    const borders = { top: line, bottom: line, left: line, right: line, insideHorizontal: line, insideVertical: line };
+
+    function cellFrom(spec, width, size) {
+      if (typeof spec === 'string' || typeof spec === 'number') spec = { text: String(spec) };
+      const parts = spec.parts || String(spec.text || '').split(/\r?\n/).map((t) => ({ text: t }));
+      const paras = parts.map((pt) => new D.Paragraph({
+        alignment: spec.align,
+        spacing: { after: 40 },
+        children: [run(pt.text, { size: pt.size || size, bold: pt.bold || spec.bold, italics: pt.italics })],
+      }));
+      return new D.TableCell({
+        width: { size: width, type: D.WidthType.DXA },
+        columnSpan: spec.span,
+        shading: spec.fill ? { type: D.ShadingType.CLEAR, fill: spec.fill, color: 'auto' } : undefined,
+        margins: { top: 50, bottom: 50, left: 80, right: 80 },
+        children: paras,
+      });
+    }
+    function makeTable(widths, header, rows, size) {
+      const total = sum(widths);
+      const trs = [];
+      trs.push(new D.TableRow({
+        tableHeader: true, cantSplit: true,
+        children: header.map((h, i) => cellFrom({ text: h, bold: true, align: D.AlignmentType.CENTER, fill: 'ECEEF3' }, widths[i], size)),
+      }));
+      rows.forEach((r) => {
+        let col = 0;
+        const cells = r.map((spec) => {
+          const span = (typeof spec === 'object' && spec.span) || 1;
+          const w = sum(widths.slice(col, col + span));
+          col += span;
+          return cellFrom(spec, w, size);
+        });
+        trs.push(new D.TableRow({ cantSplit: true, children: cells }));
+      });
+      return new D.Table({ width: { size: total, type: D.WidthType.DXA }, columnWidths: widths, borders, rows: trs });
+    }
+
+    const footer = new D.Footer({
+      children: [new D.Paragraph({ alignment: D.AlignmentType.CENTER, children: [new D.TextRun({ children: [D.PageNumber.CURRENT], font: FONT, size: 20 })] })],
+    });
+    const sections = [];
+
+    // ── Частина 1: навчальна програма (книжкова)
+    if (includeProgram) {
+      const c = [];
+      const ctr = (t, o) => para(t, { p: { alignment: D.AlignmentType.CENTER, spacing: Object.assign({ after: 120 }, (o && o.spacing) || {}) }, run: (o && o.run) || {} });
+      if (str(s.school)) c.push(ctr(str(s.school), { run: { size: 26 } }));
+      c.push(ctr('НАВЧАЛЬНА ПРОГРАМА', { run: { bold: true, size: 40 }, spacing: { before: 2600, after: 240 } }));
+      c.push(ctr('з предмета «Мистецтво»' + (gradeTxt ? ', ' + gradeTxt : ''), { run: { size: 30 } }));
+      if (yearTxt) c.push(ctr(yearTxt, { run: { size: 28 } }));
+      if (P.title) c.push(ctr('Складено на основі модульної навчальної програми «' + P.title + '»', { run: { italics: true, size: 24 }, spacing: { before: 480 } }));
+      if (str(s.teacher)) c.push(ctr('Вчитель: ' + str(s.teacher), { run: { size: 26 }, spacing: { before: 1200 } }));
+      c.push(new D.Paragraph({ children: [new D.PageBreak()] }));
+
+      if (intro && (intro.purpose || intro.structure || intro.organization || intro.assessment)) {
+        c.push(h1('Пояснювальна записка'));
+        if (intro.purpose) { c.push(h2('Мета й завдання')); c.push(...bodyParas(intro.purpose)); }
+        if (intro.structure) { c.push(h2('Структура програми')); c.push(...bodyParas(intro.structure)); }
+        if (intro.organization) { c.push(h2('Організація навчання')); c.push(...bodyParas(intro.organization)); }
+        if (intro.assessment) { c.push(h2('Оцінювання')); c.push(...bodyParas(intro.assessment)); }
+      }
+
+      c.push(h1('Розподіл годин за модулями'));
+      const widths = [700, 3300, 1300, 4338];
+      const rows = P.modules.map((m, i) => [
+        { text: String(i + 1), align: D.AlignmentType.CENTER },
+        { text: m.name, bold: true },
+        { text: String(Math.round(m.hours || 0)), align: D.AlignmentType.CENTER },
+        { text: m.topics.map((t) => t.title).join('; ') || m.summary || '' },
+      ]);
+      rows.push([{ text: '' }, { text: 'Разом', bold: true }, { text: String(totalHours(P)), bold: true, align: D.AlignmentType.CENTER }, { text: '' }]);
+      c.push(makeTable(widths, ['№', 'Модуль', 'Годин', 'Теми'], rows, 22));
+
+      c.push(h1('Зміст модулів і очікувані результати'));
+      P.modules.forEach((m, i) => {
+        c.push(h2('Модуль ' + (i + 1) + '. ' + m.name + ' (' + Math.round(m.hours || 0) + ' год)'));
+        if (m.summary) c.push(...bodyParas(m.summary));
+        if (m.topics.length) {
+          c.push(para('Теми:', { run: { bold: true }, p: { spacing: { before: 80, after: 60 } } }));
+          m.topics.forEach((t) => c.push(bullet(t.title + (t.hours ? ' (' + t.hours + ' год)' : ''))));
+        }
+        if (m.outcomes.length) {
+          c.push(para('Очікувані результати навчання:', { run: { bold: true }, p: { spacing: { before: 120, after: 60 } } }));
+          m.outcomes.forEach((o) => c.push(bullet(o)));
+        }
+      });
+      if (P.keyCompetencies.length) {
+        c.push(h1('Ключові компетентності'));
+        P.keyCompetencies.forEach((k) => c.push(bullet(k)));
+      }
+      sections.push({
+        properties: { page: { size: { width: 11906, height: 16838 }, margin: { top: 1134, right: 850, bottom: 1134, left: 1418 } } },
+        footers: { default: footer },
+        children: c,
+      });
+    }
+
+    // ── Частина 2: КТП (альбомна)
+    if (includeKtp) {
+      const c = [];
+      c.push(para('КАЛЕНДАРНО-ТЕМАТИЧНЕ ПЛАНУВАННЯ', { run: { bold: true, size: 30 }, p: { alignment: D.AlignmentType.CENTER, spacing: { after: 60 } } }));
+      const sub = ['Мистецтво', gradeTxt, yearTxt].filter(Boolean).join(', ') + ' (' + lessons.length + ' год на рік' + (P.hoursPerWeek ? ', ' + P.hoursPerWeek + ' год на тиждень' : '') + ')';
+      c.push(para(sub, { run: { size: 24 }, p: { alignment: D.AlignmentType.CENTER, spacing: { after: 60 } } }));
+      if (str(s.teacher) || str(s.school)) c.push(para([str(s.teacher) ? 'Вчитель: ' + str(s.teacher) : '', str(s.school)].filter(Boolean).join(', '), { run: { size: 22 }, p: { alignment: D.AlignmentType.CENTER, spacing: { after: 200 } } }));
+
+      const widths = [550, 1250, 2600, 550, 3000, 3000, 2188, 2000]; // Σ = 15138
+      const header = ['№', 'Дата', 'Тема уроку', 'Год.', 'Очікувані результати навчання', 'Зміст діяльності', 'Матеріали та засоби', 'Примітки'];
+      const rows = [];
+      let lastModule = -1, n = 0;
+      lessons.forEach((l) => {
+        if (l.module !== lastModule) {
+          lastModule = l.module;
+          const m = P.modules[l.module] || { name: '', hours: 0 };
+          rows.push([{ span: 8, fill: pigment(l.module).tint, bold: true, text: 'Модуль ' + (l.module + 1) + '. ' + m.name + ' — ' + Math.round(m.hours || 0) + ' год' }]);
+        }
+        n++;
+        rows.push([
+          { text: String(n), align: D.AlignmentType.CENTER },
+          { text: fmtUA(l.date), align: D.AlignmentType.CENTER },
+          { parts: [{ text: l.topic, bold: true }].concat(l.type ? [{ text: l.type, italics: true }] : []) },
+          { text: '1', align: D.AlignmentType.CENTER },
+          { text: l.outcomes },
+          { text: l.activity },
+          { text: l.materials },
+          { text: l.notes },
+        ]);
+      });
+      rows.push([{ span: 3, bold: true, text: 'Разом' }, { text: String(lessons.length), bold: true, align: D.AlignmentType.CENTER }, { span: 4, text: '' }]);
+      c.push(makeTable(widths, header, rows, 20));
+      sections.push({
+        properties: { page: { size: { width: 11906, height: 16838, orientation: D.PageOrientation.LANDSCAPE }, margin: { top: 850, right: 850, bottom: 850, left: 850 } } },
+        footers: { default: footer },
+        children: c,
+      });
+    }
+
+    return new D.Document({
+      creator: 'Планувальник мистецтва',
+      title: 'Навчальна програма і КТП: Мистецтво' + (gradeTxt ? ', ' + gradeTxt : ''),
+      styles: {
+        default: { document: { run: { font: FONT, size: 24 } } },
+        paragraphStyles: [
+          { id: 'Heading1', name: 'Heading 1', basedOn: 'Normal', next: 'Normal', quickFormat: true, run: { font: FONT, size: 30, bold: true, color: '000000' }, paragraph: { spacing: { before: 360, after: 160 }, outlineLevel: 0 } },
+          { id: 'Heading2', name: 'Heading 2', basedOn: 'Normal', next: 'Normal', quickFormat: true, run: { font: FONT, size: 26, bold: true, color: '000000' }, paragraph: { spacing: { before: 240, after: 100 }, outlineLevel: 1 } },
+        ],
+      },
+      numbering: { config: [{ reference: 'bul', levels: [{ level: 0, format: D.LevelFormat.BULLET, text: '•', alignment: D.AlignmentType.LEFT, style: { paragraph: { indent: { left: 720, hanging: 360 } } } }] }] },
+      sections,
+    });
+  }
+
+  return {
+    PIGMENTS, pigment, parseISO, toISO, fmtUA, buildSlots, parseJSONLoose, normalizeProgram, totalHours,
+    analyzePrompt, introPrompt, lessonsPrompt, normalizeLessons, normalizeIntro,
+    buildSkeleton, assignDates, chunkRanges, safeFileName, buildDocx,
+  };
+});
+
+</script>
+<script>
+(function () {
+  'use strict';
+  const C = window.PlannerCore;
+
+  // ───────────── налаштування ─────────────
+  const STORE_KEY = 'art-planner:v1';
+  const CODE_KEY = 'art-planner:code';
+  const DOCX_URLS = ['https://cdn.jsdelivr.net/npm/docx@9.6.1/dist/index.iife.js'];
+  const PDF_URLS = [
+    'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js',
+    'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js',
+  ];
+  const PDF_WORKER = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  const CHUNK = 8; // уроків за один запит до моделі
+  const MAX_CHARS_CLAUDE = 24000;
+  const MAX_CHARS_SERVER = 60000;
+  const WEEKDAYS = ['Понеділок', 'Вівторок', 'Середа', 'Четвер', 'П’ятниця'];
+
+  const $ = (s, r) => (r || document).querySelector(s);
+  const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
+  const esc = (v) => String(v == null ? '' : v).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+  // ───────────── стан ─────────────
+  const defaults = () => ({
+    sourceName: '',
+    sourceText: '',
+    program: null,
+    intro: null,
+    lessons: [],
+    settings: {
+      school: '', teacher: '', grade: '', year: '2026/2027',
+      start: '2026-09-01', end: '2027-05-28',
+      rules: [{ weekday: 3, pattern: 'all' }],
+      breaks: [],
+      notes: '', includeProgram: true, includeKtp: true,
+    },
+  });
+  function load() {
+    try {
+      const raw = localStorage.getItem(STORE_KEY);
+      if (!raw) return defaults();
+      const d = defaults(), s = JSON.parse(raw);
+      return Object.assign(d, s, { settings: Object.assign(d.settings, s.settings || {}) });
+    } catch (e) { return defaults(); }
+  }
+  let state = load();
+  let saveTimer = null;
+  function save() {
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => { try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) { /* немає сховища — не страшно */ } }, 300);
+  }
+
+  // ───────────── середовище: Claude-артефакт чи власний сервер ─────────────
+  let mode = 'server', sampleFn = null, dl = null;
+  async function detectEnv() {
+    if (window.claude && typeof window.claude.use === 'function') {
+      try { const s = await window.claude.use('sample'); if (s) { sampleFn = s; mode = 'claude'; } } catch (e) { /* ігноруємо */ }
+      try { dl = await window.claude.use('downloads'); } catch (e) { dl = null; }
+    }
+    $('#access-box').hidden = mode !== 'server';
+    $('#claude-note').hidden = mode !== 'claude';
+  }
+  const envReady = detectEnv();
+
+  function normErr(e) {
+    if (e && e.name === 'AbortError') return Object.assign(new Error('Зупинено.'), { code: 'cancelled' });
+    const code = e && e.code;
+    const map = {
+      cancelled: 'Зупинено.',
+      not_granted: 'Дозвіл на використання Claude не надано. Оновіть сторінку й дозвольте запит.',
+      sampling_disabled: 'Claude недоступний для цього облікового запису.',
+      rate_limited: 'Забагато запитів. Зачекайте хвилину й натисніть «Продовжити».',
+      prompt_too_large: 'Текст завеликий. Вставте лише розділ із модулями.',
+      upstream_error: 'Тимчасова помилка Claude. Натисніть «Продовжити».',
+      unauthorized: 'Невірний або відсутній код доступу.',
+    };
+    const err = new Error(map[code] || (e && e.message) || 'Не вдалося отримати відповідь.');
+    err.code = code || 'error';
+    return err;
+  }
+
+  async function ask(prompt, { signal, maxTokens = 6000, cache = false } = {}) {
+    await envReady;
+    if (mode === 'claude') {
+      try {
+        const r = await sampleFn(prompt, { signal, cache, modelTier: 'default' });
+        return { text: r.text, truncated: !!r.truncated };
+      } catch (e) { throw normErr(e); }
+    }
+    let res;
+    try {
+      res = await fetch('/api/generate', {
+        method: 'POST', signal,
+        headers: { 'content-type': 'application/json', 'x-access-code': ($('#access').value || '').trim() },
+        body: JSON.stringify({ prompt, maxTokens }),
+      });
+    } catch (e) {
+      throw normErr(e && e.name === 'AbortError' ? e : { message: 'Немає зв’язку із сервером.' });
+    }
+    let data = {};
+    try { data = await res.json(); } catch (e) { /* не JSON */ }
+    if (!res.ok) throw normErr({ code: res.status === 401 ? 'unauthorized' : 'server', message: data.error || 'Помилка сервера (' + res.status + ').' });
+    return { text: data.text || '', truncated: !!data.truncated };
+  }
+
+  // ───────────── завантаження бібліотек ─────────────
+  const libs = {};
+  function loadScript(key, urls) {
+    if (libs[key]) return libs[key];
+    libs[key] = new Promise((resolve, reject) => {
+      let i = 0;
+      const next = () => {
+        if (i >= urls.length) { delete libs[key]; return reject(new Error('Не вдалося завантажити потрібну бібліотеку. Перевірте з’єднання.')); }
+        const s = document.createElement('script');
+        s.src = urls[i++];
+        s.onload = () => resolve();
+        s.onerror = () => { s.remove(); next(); };
+        document.head.appendChild(s);
+      };
+      next();
+    });
+    return libs[key];
+  }
+
+  // ───────────── читання файлів ─────────────
+  async function unzipEntry(buf, wanted) {
+    const dv = new DataView(buf), u8 = new Uint8Array(buf), dec = new TextDecoder();
+    let eocd = -1;
+    for (let i = u8.length - 22; i >= Math.max(0, u8.length - 65557); i--) {
+      if (dv.getUint32(i, true) === 0x06054b50) { eocd = i; break; }
+    }
+    if (eocd < 0) throw new Error('Файл не схожий на DOCX.');
+    const count = dv.getUint16(eocd + 10, true);
+    let off = dv.getUint32(eocd + 16, true);
+    for (let n = 0; n < count; n++) {
+      if (dv.getUint32(off, true) !== 0x02014b50) break;
+      const method = dv.getUint16(off + 10, true), csize = dv.getUint32(off + 20, true);
+      const nlen = dv.getUint16(off + 28, true), xlen = dv.getUint16(off + 30, true), clen = dv.getUint16(off + 32, true);
+      const lho = dv.getUint32(off + 42, true);
+      const name = dec.decode(u8.subarray(off + 46, off + 46 + nlen));
+      if (name === wanted) {
+        const start = lho + 30 + dv.getUint16(lho + 26, true) + dv.getUint16(lho + 28, true);
+        const data = u8.subarray(start, start + csize);
+        if (method === 0) return dec.decode(data);
+        if (method === 8) {
+          const stream = new Blob([data]).stream().pipeThrough(new DecompressionStream('deflate-raw'));
+          return await new Response(stream).text();
+        }
+        throw new Error('Непідтримуваний спосіб стиснення DOCX.');
+      }
+      off += 46 + nlen + xlen + clen;
+    }
+    return null;
+  }
+  function docxXmlToText(xml) {
+    const W = 'http://schemas.openxmlformats.org/wordprocessingml/2006/main';
+    const doc = new DOMParser().parseFromString(xml, 'application/xml');
+    const body = doc.getElementsByTagNameNS(W, 'body')[0];
+    if (!body) throw new Error('Не вдалося прочитати вміст DOCX.');
+    const out = [];
+    const paraText = (p) => {
+      let t = '';
+      const walk = (n) => {
+        for (const c of n.childNodes) {
+          if (c.nodeType !== 1) continue;
+          const ln = c.localName;
+          if (ln === 't') t += c.textContent;
+          else if (ln === 'tab') t += '\t';
+          else if (ln === 'br' || ln === 'cr') t += '\n';
+          else walk(c);
+        }
+      };
+      walk(p);
+      return t;
+    };
+    const handleP = (p) => {
+      const st = p.getElementsByTagNameNS(W, 'pStyle')[0];
+      const style = st ? st.getAttributeNS(W, 'val') || '' : '';
+      const t = paraText(p).trim();
+      if (!t) return;
+      const m = /^(heading|заголовок)\s*(\d)/i.exec(style);
+      if (m) out.push('#'.repeat(Math.min(+m[2], 4)) + ' ' + t);
+      else if (p.getElementsByTagNameNS(W, 'numPr')[0]) out.push('- ' + t);
+      else out.push(t);
+    };
+    const walkBody = (n) => {
+      for (const c of n.childNodes) {
+        if (c.nodeType !== 1) continue;
+        if (c.localName === 'p') handleP(c);
+        else if (c.localName === 'tbl') {
+          for (const tr of c.getElementsByTagNameNS(W, 'tr')) {
+            const cells = Array.from(tr.childNodes).filter((x) => x.localName === 'tc')
+              .map((tc) => Array.from(tc.getElementsByTagNameNS(W, 'p')).map(paraText).join(' ').trim());
+            if (cells.some(Boolean)) out.push(cells.join(' | '));
+          }
+        } else if (c.localName === 'sdt' || c.localName === 'sdtContent') walkBody(c);
+      }
+    };
+    walkBody(body);
+    return out.join('\n');
+  }
+  async function extractDocx(buf) {
+    if (typeof DecompressionStream === 'undefined') throw new Error('Цей браузер не вміє розпаковувати DOCX. Вставте текст вручну.');
+    const xml = await unzipEntry(buf, 'word/document.xml');
+    if (!xml) throw new Error('У файлі немає тексту документа.');
+    return docxXmlToText(xml);
+  }
+  async function extractPdf(buf) {
+    await loadScript('pdf', PDF_URLS);
+    const lib = window.pdfjsLib;
+    if (!lib) throw new Error('Не вдалося завантажити читач PDF. Вставте текст вручну.');
+    lib.GlobalWorkerOptions.workerSrc = PDF_WORKER;
+    const pdf = await lib.getDocument({ data: new Uint8Array(buf) }).promise;
+    let text = '';
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const page = await pdf.getPage(i);
+      const tc = await page.getTextContent();
+      let last = null, line = '';
+      const lines = [];
+      for (const it of tc.items) {
+        const y = it.transform ? it.transform[5] : 0;
+        if (last !== null && Math.abs(y - last) > 3) { lines.push(line); line = ''; }
+        line += it.str;
+        last = y;
+      }
+      lines.push(line);
+      text += lines.join('\n') + '\n\n';
+    }
+    return text;
+  }
+  async function extractText(file) {
+    const name = file.name.toLowerCase();
+    if (name.endsWith('.docx')) return extractDocx(await file.arrayBuffer());
+    if (name.endsWith('.pdf')) return extractPdf(await file.arrayBuffer());
+    if (/\.(txt|md|csv|html?)$/.test(name)) return file.text();
+    if (name.endsWith('.doc')) throw new Error('Формат .doc застарілий. Збережіть файл як .docx або PDF.');
+    throw new Error('Підтримуються файли DOCX, PDF і TXT.');
+  }
+
+  // ───────────── повідомлення ─────────────
+  function say(sel, text, kind) {
+    const el = $(sel);
+    el.textContent = text || '';
+    el.className = 'msg' + (kind ? ' ' + kind : '');
+  }
+  const maxChars = () => (mode === 'claude' ? MAX_CHARS_CLAUDE : MAX_CHARS_SERVER);
+
+  // ───────────── крок 1: файл і аналіз ─────────────
+  function updateSourceUI() {
+    const n = state.sourceText.trim().length;
+    const chip = $('#filechip');
+    chip.hidden = !(state.sourceName || n);
+    chip.textContent = (state.sourceName ? state.sourceName + ': ' : '') + n.toLocaleString('uk-UA') + ' символів';
+    $('#btn-analyze').disabled = n < 200;
+  }
+  async function onFile(file) {
+    if (!file) return;
+    say('#analyze-msg', 'Читаю файл…');
+    try {
+      const text = (await extractText(file)).replace(/\r/g, '').replace(/[ \t]+\n/g, '\n').replace(/\n{3,}/g, '\n\n').trim();
+      if (text.length < 200) throw new Error('У файлі майже немає тексту (можливо, це скан). Вставте текст програми вручну.');
+      state.sourceName = file.name;
+      state.sourceText = text;
+      $('#src').value = text;
+      updateSourceUI();
+      save();
+      say('#analyze-msg', 'Файл прочитано. Натисніть «Проаналізувати програму».', 'ok');
+    } catch (e) {
+      say('#analyze-msg', e.message, 'err');
+    }
+  }
+
+  let currentAbort = null;
+  async function analyze() {
+    const full = state.sourceText.trim();
+    if (full.length < 200) return;
+    await envReady;
+    const clipped = full.slice(0, maxChars());
+    setBusy(true);
+    currentAbort = new AbortController();
+    say('#analyze-msg', 'Аналізую структуру програми… це може тривати до хвилини.');
+    try {
+      const { text } = await ask(C.analyzePrompt(clipped), { signal: currentAbort.signal, maxTokens: 6000, cache: true });
+      const program = C.normalizeProgram(C.parseJSONLoose(text));
+      if (!program.modules.length) throw new Error('Не вдалося знайти модулі. Вставте лише ту частину програми, де описано модулі й теми.');
+      state.program = program;
+      state.lessons = [];
+      state.intro = null;
+      if (!state.settings.grade && program.grade) state.settings.grade = (program.grade.match(/\d+/) || [program.grade])[0];
+      const cut = full.length > clipped.length ? ' Використано перші ' + clipped.length.toLocaleString('uk-UA') + ' символів тексту.' : '';
+      say('#analyze-msg', 'Знайдено модулів: ' + program.modules.length + '.' + cut, 'ok');
+      renderAll();
+      save();
+      $('#s2').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } catch (e) {
+      say('#analyze-msg', e.message, e.code === 'cancelled' ? '' : 'err');
+    } finally { setBusy(false); currentAbort = null; }
+  }
+
+  // ───────────── крок 2: модулі ─────────────
+  const topicsToText = (m) => m.topics.map((t) => t.title + (t.hours ? ' | ' + t.hours : '')).join('\n');
+  function textToTopics(v) {
+    return v.split('\n').map((l) => l.trim()).filter(Boolean).map((l) => {
+      const parts = l.split('|');
+      const h = parts.length > 1 ? Number(parts[parts.length - 1].replace(',', '.')) : NaN;
+      return Number.isFinite(h) && parts.length > 1 ? { title: parts.slice(0, -1).join('|').trim(), hours: h } : { title: l, hours: null };
+    });
+  }
+  const linesOf = (v) => v.split('\n').map((l) => l.trim()).filter(Boolean);
+
+  function renderRibbon() {
+    const mods = state.program ? state.program.modules : [];
+    $('#ribbon').innerHTML = mods.map((m, i) => {
+      const p = C.pigment(i), h = Math.max(0, Math.round(m.hours || 0));
+      return '<span class="seg" style="flex:' + Math.max(h, 0.6) + ';background:' + p.hex + ';color:' + p.ink + '" title="' + esc(m.name + ': ' + h + ' год') + '">' + h + '</span>';
+    }).join('');
+  }
+  function renderProgram() {
+    const P = state.program;
+    if (!P) return;
+    const bits = [];
+    if (P.title) bits.push('«' + P.title + '»');
+    if (P.hoursPerYear) bits.push(P.hoursPerYear + ' год на рік');
+    $('#prog-meta').textContent = (bits.length ? bits.join(', ') + '. ' : '') + 'Перевірте, що знайдено. Ширина сегмента — кількість годин.';
+    renderRibbon();
+    $('#mods').innerHTML = P.modules.map((m, i) => {
+      const p = C.pigment(i);
+      return '<li class="mod" data-i="' + i + '" style="--pig:' + p.hex + '">' +
+        '<div class="mod-head">' +
+        '<input type="text" class="mod-name" data-k="name" value="' + esc(m.name) + '" aria-label="Назва модуля ' + (i + 1) + '">' +
+        '<label class="hrs"><input type="number" min="0" step="1" data-k="hours" value="' + esc(Math.round(m.hours || 0)) + '" aria-label="Годин у модулі ' + (i + 1) + '"> год</label>' +
+        '<button class="icon" type="button" data-act="del-mod" aria-label="Видалити модуль ' + (i + 1) + '">✕</button></div>' +
+        (m.estimated ? '<div class="est">Години розподілено приблизно — перевірте.</div>' : '') +
+        '<details><summary>Теми (' + m.topics.length + ') і очікувані результати (' + m.outcomes.length + ')</summary><div class="stack">' +
+        '<label class="f"><span>Про модуль</span><textarea rows="2" data-k="summary">' + esc(m.summary) + '</textarea></label>' +
+        '<label class="f"><span>Теми: кожна з нового рядка, години через « | »</span><textarea rows="5" data-k="topics">' + esc(topicsToText(m)) + '</textarea></label>' +
+        '<label class="f"><span>Очікувані результати: кожен з нового рядка</span><textarea rows="5" data-k="outcomes">' + esc(m.outcomes.join('\n')) + '</textarea></label>' +
+        '</div></details></li>';
+    }).join('');
+  }
+
+  // ───────────── крок 3: розклад ─────────────
+  function renderSettings() {
+    $$('[data-set]').forEach((el) => {
+      const v = state.settings[el.dataset.set];
+      if (el.type === 'checkbox') el.checked = !!v; else el.value = v == null ? '' : v;
+    });
+    renderRules();
+    renderBreaks();
+  }
+  function renderRules() {
+    $('#rules').innerHTML = state.settings.rules.map((r, i) =>
+      '<div class="row" data-i="' + i + '">' +
+      '<select data-rule="weekday" aria-label="День тижня">' + WEEKDAYS.map((d, k) => '<option value="' + (k + 1) + '"' + (Number(r.weekday) === k + 1 ? ' selected' : '') + '>' + d + '</option>').join('') + '</select>' +
+      '<select data-rule="pattern" aria-label="Як часто">' +
+      [['all', 'щотижня'], ['odd', 'непарні тижні'], ['even', 'парні тижні']].map((o) => '<option value="' + o[0] + '"' + (r.pattern === o[0] ? ' selected' : '') + '>' + o[1] + '</option>').join('') + '</select>' +
+      '<button class="icon" type="button" data-act="del-rule" aria-label="Прибрати цей урок">✕</button></div>').join('');
+  }
+  function renderBreaks() {
+    $('#breaks').innerHTML = state.settings.breaks.map((b, i) =>
+      '<div class="row brk" data-i="' + i + '"><span class="lbl">з</span>' +
+      '<input type="date" data-brk="from" value="' + esc(b.from) + '" aria-label="Початок">' +
+      '<span class="lbl">по</span>' +
+      '<input type="date" data-brk="to" value="' + esc(b.to) + '" aria-label="Кінець">' +
+      '<button class="icon" type="button" data-act="del-break" aria-label="Видалити діапазон">✕</button></div>').join('');
+  }
+  const slotsNow = () => C.buildSlots({ start: state.settings.start, end: state.settings.end, rules: state.settings.rules, breaks: state.settings.breaks });
+  function shapeOK() {
+    const P = state.program;
+    return !!(P && state.lessons.length && P.modules.every((m, i) => state.lessons.filter((l) => l.module === i).length === Math.max(0, Math.round(m.hours || 0))) &&
+      !state.lessons.some((l) => l.module >= P.modules.length));
+  }
+  function updateSummary() {
+    const el = $('#summary');
+    if (!state.program) { el.hidden = true; return; }
+    const total = C.totalHours(state.program), n = slotsNow().length;
+    let text, warn = false;
+    if (!state.settings.rules.length) { text = 'Додайте хоча б один урок на тиждень — без цього дати не порахувати.'; warn = true; }
+    else if (n >= total) text = 'За програмою ' + total + ' год; за розкладом ' + n + ' уроків' + (n > total ? ' (запас ' + (n - total) + ')' : '') + '.';
+    else { text = 'За програмою ' + total + ' год, а за розкладом лише ' + n + ' уроків: для останніх ' + (total - n) + ' дат не буде. Додайте урок на тиждень, змініть дату завершення або перевірте канікули.'; warn = true; }
+    if (state.lessons.length && !shapeOK()) { text += ' Години модулів змінено — план треба скласти заново.'; warn = true; }
+    el.textContent = text;
+    el.className = 'summary' + (warn ? ' warn' : '');
+    el.hidden = false;
+  }
+
+  // ───────────── крок 4: складання ─────────────
+  let armed = false, armTimer = null;
+  function genState() {
+    if (!shapeOK()) return 'new';
+    return state.lessons.every((l) => l.topic) ? 'done' : 'partial';
+  }
+  function updateGenButton() {
+    const s = genState();
+    $('#btn-gen').textContent = armed ? 'Стерти й скласти заново?' : s === 'partial' ? 'Продовжити' : s === 'done' ? 'Скласти заново' : 'Скласти план';
+  }
+  function setBusy(b) {
+    ['#btn-analyze', '#btn-gen', '#btn-docx'].forEach((s) => { const el = $(s); if (el) el.disabled = b || (s === '#btn-analyze' && state.sourceText.trim().length < 200); });
+    $('#btn-stop').hidden = !b;
+    if (!b) { updateSourceUI(); updateGenButton(); }
+  }
+  function setProgress(text, pct) {
+    say('#gen-msg', text);
+    $('#gen-box').hidden = pct == null;
+    if (pct != null) $('#prog').value = Math.round(pct * 100);
+  }
+
+  async function generate() {
+    const P = state.program, S = state.settings;
+    if (!P || !P.modules.length) return;
+    if (!C.totalHours(P)) { say('#gen-msg', 'Вкажіть кількість годин хоча б для одного модуля.', 'err'); return; }
+    if (!S.includeProgram && !S.includeKtp) { say('#gen-msg', 'Позначте, що включити у файл.', 'err'); return; }
+    const st = genState();
+    if (st === 'done' && !armed) {
+      armed = true; updateGenButton();
+      clearTimeout(armTimer);
+      armTimer = setTimeout(() => { armed = false; updateGenButton(); }, 5000);
+      return;
+    }
+    armed = false;
+    if (st === 'new' || st === 'done') {
+      state.lessons = C.buildSkeleton(P);
+      C.assignDates(state.lessons, slotsNow());
+      state.intro = null;
+    }
+    await envReady;
+    setBusy(true);
+    currentAbort = new AbortController();
+    const signal = currentAbort.signal;
+    say('#gen-msg', '');
+    const ranges = [];
+    P.modules.forEach((m, mi) => {
+      const count = state.lessons.filter((l) => l.module === mi).length;
+      C.chunkRanges(count, CHUNK).forEach(([a, b]) => ranges.push({ mi, a, b }));
+    });
+    const needIntro = S.includeProgram && !state.intro;
+    const steps = ranges.length + (needIntro ? 1 : 0);
+    let done = 0, introFailed = false;
+    renderPlan(); renderAllVisibility();
+    try {
+      if (needIntro) {
+        setProgress('Пишу пояснювальну записку…', 0);
+        try {
+          const { text } = await ask(C.introPrompt(P, S, state.sourceText), { signal, maxTokens: 2000 });
+          state.intro = C.normalizeIntro(C.parseJSONLoose(text));
+          save();
+        } catch (e) {
+          if (e.code === 'cancelled' || e.code === 'not_granted' || e.code === 'unauthorized') throw e;
+          introFailed = true; // без записки файл усе одно корисний
+        }
+        done++;
+      }
+      for (const r of ranges) {
+        const inMod = state.lessons.filter((l) => l.module === r.mi);
+        if (inMod.slice(r.a, r.b).every((l) => l.topic)) { done++; continue; }
+        setProgress('Модуль ' + (r.mi + 1) + ' з ' + P.modules.length + ': уроки ' + (r.a + 1) + '–' + r.b + '…', done / steps);
+        const previousTopics = inMod.slice(0, r.a).map((l) => l.topic).filter(Boolean);
+        const { text } = await ask(C.lessonsPrompt({ program: P, settings: S, moduleIdx: r.mi, from: r.a, to: r.b, previousTopics }), { signal, maxTokens: 5000 });
+        const items = C.normalizeLessons(C.parseJSONLoose(text, { array: true }));
+        items.slice(0, r.b - r.a).forEach((it, k) => Object.assign(inMod[r.a + k], it));
+        renderPlan(); save();
+        if (items.length < r.b - r.a) throw new Error('Модель повернула ' + items.length + ' уроків із ' + (r.b - r.a) + '. Натисніть «Продовжити».');
+        done++;
+      }
+      setProgress('', 1);
+      say('#gen-msg', 'Готово: ' + state.lessons.length + ' уроків.' + (introFailed ? ' Пояснювальну записку скласти не вдалося — файл буде без неї.' : ' Перегляньте таблицю й завантажте Word.'), 'ok');
+      $('#s5').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } catch (e) {
+      const stopped = e.code === 'cancelled';
+      say('#gen-msg', stopped ? 'Зупинено. Готові уроки збережено — «Продовжити» допише решту.' : e.message, stopped ? '' : 'err');
+      $('#gen-box').hidden = true;
+    } finally {
+      setBusy(false); currentAbort = null; renderPlan(); updateSummary(); save();
+    }
+  }
+
+  // ───────────── крок 5: таблиця й Word ─────────────
+  function renderPlan() {
+    const L = state.lessons;
+    const wrap = $('#plan');
+    if (!L.length) { wrap.innerHTML = ''; return; }
+    let html = '<table class="plan"><thead><tr><th>№</th><th>Дата</th><th>Тема уроку</th><th>Очікувані результати</th><th>Зміст діяльності</th><th>Матеріали</th><th>Примітки</th></tr></thead><tbody>';
+    let last = -1, n = 0;
+    L.forEach((l, i) => {
+      const pig = C.pigment(l.module).hex;
+      if (l.module !== last) {
+        last = l.module;
+        const m = state.program.modules[l.module] || { name: '', hours: 0 };
+        html += '<tr class="modrow" style="--pig:' + pig + '"><th colspan="7">Модуль ' + (l.module + 1) + '. ' + esc(m.name) + ', ' + Math.round(m.hours || 0) + ' год</th></tr>';
+      }
+      n++;
+      const ed = (f, label, cls) => '<div class="ed ' + (cls || '') + '" contenteditable="true" role="textbox" aria-label="' + label + ', урок ' + n + '" data-f="' + f + '">' + esc(l[f]) + '</div>';
+      html += '<tr class="lesson" data-i="' + i + '" style="--pig:' + pig + '">' +
+        '<td class="c-n" data-label="Урок">' + n + '</td>' +
+        '<td class="c-date" data-label="Дата"><input type="date" data-f="date" value="' + esc(l.date) + '" aria-label="Дата, урок ' + n + '"></td>' +
+        '<td class="c-topic" data-label="Тема уроку">' + ed('topic', 'Тема') + ed('type', 'Тип уроку', 'type') + '</td>' +
+        '<td data-label="Очікувані результати">' + ed('outcomes', 'Результати') + '</td>' +
+        '<td data-label="Зміст діяльності">' + ed('activity', 'Діяльність') + '</td>' +
+        '<td data-label="Матеріали">' + ed('materials', 'Матеріали') + '</td>' +
+        '<td data-label="Примітки">' + ed('notes', 'Примітки') + '</td></tr>';
+    });
+    wrap.innerHTML = html + '</tbody></table>';
+  }
+
+  async function saveBlob(blob, filename) {
+    await envReady;
+    if (mode === 'claude') {
+      if (!dl) throw new Error('У цьому вікні збереження файлів недоступне. Відкрийте артефакт на claude.ai у браузері.');
+      try { await dl.save({ filename, data: blob }); return 'saved'; }
+      catch (e) { if (e && e.code === 'declined') return 'declined'; throw new Error((e && e.message) || 'Не вдалося зберегти файл.'); }
+    }
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob); a.download = filename;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+    return 'saved';
+  }
+  async function exportDocx() {
+    const S = state.settings;
+    const lessons = state.lessons.filter((l) => l.topic);
+    if (S.includeKtp && !lessons.length) { say('#exp-msg', 'Спершу складіть план.', 'err'); return; }
+    if (!S.includeKtp && !S.includeProgram) { say('#exp-msg', 'Позначте, що включити у файл (крок 3).', 'err'); return; }
+    say('#exp-msg', 'Готую файл…');
+    $('#btn-docx').disabled = true;
+    try {
+      await loadScript('docx', DOCX_URLS);
+      if (!window.docx || !window.docx.Packer) throw new Error('Не вдалося завантажити генератор Word.');
+      const doc = C.buildDocx(window.docx, { settings: S, program: state.program, intro: state.intro, lessons }, { includeProgram: S.includeProgram, includeKtp: S.includeKtp });
+      const blob = await window.docx.Packer.toBlob(doc);
+      const name = C.safeFileName('Мистецтво_' + (S.grade ? S.grade + '_клас_' : '') + String(S.year || '').replace('/', '-')) + '.docx';
+      const r = await saveBlob(blob, name);
+      say('#exp-msg', r === 'saved' ? 'Файл ' + name + ' збережено.' : 'Збереження скасовано.', r === 'saved' ? 'ok' : '');
+    } catch (e) {
+      say('#exp-msg', e.message, 'err');
+    } finally { $('#btn-docx').disabled = false; }
+  }
+
+  // ───────────── загальний рендер ─────────────
+  function renderAllVisibility() {
+    const has = !!state.program;
+    $('#s2').hidden = !has; $('#s3').hidden = !has; $('#s4').hidden = !has;
+    $('#s5').hidden = !state.lessons.length;
+  }
+  function renderAll() {
+    $('#src').value = state.sourceText;
+    updateSourceUI();
+    renderProgram();
+    renderSettings();
+    renderPlan();
+    renderAllVisibility();
+    updateSummary();
+    updateGenButton();
+  }
+
+  // ───────────── події ─────────────
+  document.addEventListener('input', (e) => {
+    const t = e.target;
+    if (t.id === 'src') { state.sourceText = t.value; state.sourceName = state.sourceName && t.value ? state.sourceName : ''; updateSourceUI(); save(); return; }
+    if (t.dataset && t.dataset.set) {
+      state.settings[t.dataset.set] = t.type === 'checkbox' ? t.checked : t.value;
+      updateSummary(); save(); return;
+    }
+    const mod = t.closest && t.closest('.mod');
+    if (mod && t.dataset.k) {
+      const m = state.program.modules[+mod.dataset.i], k = t.dataset.k;
+      if (k === 'hours') { m.hours = Math.max(0, Number(t.value) || 0); m.estimated = false; renderRibbon(); updateSummary(); updateGenButton(); }
+      else if (k === 'topics') { m.topics = textToTopics(t.value); }
+      else if (k === 'outcomes') { m.outcomes = linesOf(t.value); }
+      else m[k] = t.value;
+      save(); return;
+    }
+    const row = t.closest && t.closest('.row');
+    if (row && t.dataset.rule) { state.settings.rules[+row.dataset.i][t.dataset.rule] = t.value; updateSummary(); save(); return; }
+    if (row && t.dataset.brk) { state.settings.breaks[+row.dataset.i][t.dataset.brk] = t.value; updateSummary(); save(); return; }
+    const tr = t.closest && t.closest('tr.lesson');
+    if (tr && t.dataset.f) {
+      const l = state.lessons[+tr.dataset.i];
+      l[t.dataset.f] = t.tagName === 'INPUT' ? t.value : t.innerText.replace(/\n+$/, '');
+      save();
+    }
+  });
+  document.addEventListener('paste', (e) => {
+    const ed = e.target.closest && e.target.closest('.ed');
+    if (!ed) return;
+    e.preventDefault();
+    const txt = (e.clipboardData || window.clipboardData).getData('text/plain');
+    document.execCommand('insertText', false, txt);
+  });
+  document.addEventListener('click', (e) => {
+    const b = e.target.closest('[data-act]');
+    if (!b) return;
+    const act = b.dataset.act, i = +((b.closest('[data-i]') || {}).dataset || {}).i;
+    const S = state.settings;
+    if (act === 'add-mod') { state.program.modules.push({ name: 'Новий модуль', hours: 0, summary: '', topics: [], outcomes: [] }); renderProgram(); updateSummary(); updateGenButton(); }
+    else if (act === 'del-mod') { state.program.modules.splice(i, 1); renderProgram(); updateSummary(); updateGenButton(); }
+    else if (act === 'add-rule') { S.rules.push({ weekday: 1, pattern: 'all' }); renderRules(); updateSummary(); }
+    else if (act === 'del-rule') { S.rules.splice(i, 1); renderRules(); updateSummary(); }
+    else if (act === 'add-break') { S.breaks.push({ from: '', to: '' }); renderBreaks(); }
+    else if (act === 'del-break') { S.breaks.splice(i, 1); renderBreaks(); updateSummary(); }
+    else if (act === 'redate') { C.assignDates(state.lessons, slotsNow()); renderPlan(); say('#exp-msg', 'Дати перераховано за розкладом.', 'ok'); }
+    save();
+  });
+  $('#file').addEventListener('change', (e) => { onFile(e.target.files[0]); e.target.value = ''; });
+  const drop = $('#drop');
+  ['dragenter', 'dragover'].forEach((ev) => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.add('over'); }));
+  ['dragleave', 'drop'].forEach((ev) => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.remove('over'); }));
+  drop.addEventListener('drop', (e) => onFile(e.dataTransfer.files[0]));
+  $('#btn-analyze').addEventListener('click', analyze);
+  $('#btn-gen').addEventListener('click', generate);
+  $('#btn-stop').addEventListener('click', () => { if (currentAbort) currentAbort.abort(); });
+  $('#btn-docx').addEventListener('click', exportDocx);
+  let resetArmed = false;
+  $('#btn-reset').addEventListener('click', (e) => {
+    if (!resetArmed) {
+      resetArmed = true; e.target.textContent = 'Стерти все?';
+      setTimeout(() => { resetArmed = false; e.target.textContent = 'Почати спочатку'; }, 4000);
+      return;
+    }
+    resetArmed = false; e.target.textContent = 'Почати спочатку';
+    state = defaults();
+    try { localStorage.removeItem(STORE_KEY); } catch (err) { /* ok */ }
+    ['#analyze-msg', '#gen-msg', '#exp-msg'].forEach((s) => say(s, ''));
+    $('#gen-box').hidden = true;
+    renderAll();
+    window.scrollTo({ top: 0 });
+  });
+  try { $('#access').value = localStorage.getItem(CODE_KEY) || ''; } catch (e) { /* ok */ }
+  $('#access').addEventListener('input', (e) => { try { localStorage.setItem(CODE_KEY, e.target.value); } catch (err) { /* ok */ } });
+
+  renderAll();
+})();
+
+</script>
+</body>
+</html>

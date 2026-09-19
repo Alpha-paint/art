@@ -1,0 +1,6 @@
+{
+  "name": "art-teacher-planner",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Генератор навчальної програми і КТП для вчителя мистецтва"
+}
